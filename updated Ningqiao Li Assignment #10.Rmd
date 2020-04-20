@@ -66,7 +66,7 @@ summary.stats
 # Solution 1. This one doesn't work.
 tidy.ELA2 %>%
   group_by(Room) %>%
-  count(is.na(`1st Quarter`) == FALSE)  ## Why does it also show FALSE count?
+  count(is.na(`1st Quarter`) == TRUE)  ## Why does it also show FALSE count?
 ```
 
 ```{r}
