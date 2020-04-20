@@ -119,7 +119,7 @@ NYC2
 ```
 
 ```{r}
-(NYC2 <- NYC %>%
+(NYC3 <- NYC %>%
      filter(NYC, origin == "JFK", dest == "ATL" ) %>%
      select(arr_delay, carrier, origin, dest)) ## This one doesn't work.
 
