@@ -6,8 +6,11 @@ output: html_notebook
 ---
 
 ***
+```{r include=FALSE}
 library(tidyverse)
 library(here)
+```
+
 
 ### 1. Write a script to import and tidy the Johnson Elementary Project Data. 
 
@@ -35,10 +38,10 @@ write_csv(tidy.ELA2, "tidy.ELA2.csv")
 
 ```{r}
 tidy.ELA <- tidy.ELA %>%
-  filter(!is.na('Student ID'))  ## if use this function to delete NA, would have some problem here!!
+  filter(!is.na(`Student ID`))  ## It works.
 
 tidy.ELA %>%
-  filter('Student ID' >0) ## It also doesn't work to delete the NA in student ID.
+  filter(`Student ID` >0) ## It also works!
 ```
 
 
@@ -63,14 +66,6 @@ summary.stats
 ### 3. Write a script to show the frequency of missing data points for each quarter by room.
 
 ```{r}
-# Solution 1. This one doesn't work.
-tidy.ELA2 %>%
-  group_by(Room) %>%
-  count(is.na(`1st Quarter`) == TRUE)  ## Why does it also show FALSE count?
-```
-
-```{r}
-# Solution 2. This one works.
 frenq.missing <- tidy.ELA2 %>%
   group_by(Room) %>%
   summarize(sum(is.na(`1st Quarter`)),
@@ -94,12 +89,13 @@ tidy.ELA3 <- tidy.ELA2 %>%
 median_plot <- tidy.ELA3 %>%
   group_by(Room, Quarter) %>%
   summarize(median_score = median(Rating, na.rm = TRUE)) %>%
-  ggplot(aes(x = Quarter, y = median_score), group = Room) +
-    geom_line (aes(color = Room))+
-  labs(x = "Quarter", y = "Meidan ELA Ratings",
+  ggplot(aes(x = Quarter, y = median_score, group = Room)) +
+    geom_line (aes(color = Room)) +
+    facet_wrap(vars(Room)) +
+    labs(x = "Quarter", y = "Meidan ELA Ratings",
        title = "Median rating trends across different classes")
 
-median_plot  ## I don't know why the plot is blank :(
+median_plot  
 ```
 
 
@@ -111,19 +107,12 @@ median_plot  ## I don't know why the plot is blank :(
 # Tidy the data first
 NYC <- read_csv("NYC Flights 2013.csv")
 NYC
-NYC2 <- filter(NYC, origin == "JFK", dest == "ATL" )
-NYC2 <- select(NYC2, arr_delay, carrier, origin, dest)
-NYC2
-## These two seperate functions do work. However, if I put them together, it doesn't work. As the following chunck shows.
+(NYC2 <- NYC %>%
+     filter(origin == "JFK", dest == "ATL" ) %>%
+     select(arr_delay, carrier, origin, dest))
 
 ```
 
-```{r}
-(NYC3 <- NYC %>%
-     filter(NYC, origin == "JFK", dest == "ATL" ) %>%
-     select(arr_delay, carrier, origin, dest)) ## This one doesn't work.
-
-```
 
 ```{r}
 # Merge data to get the full name of carrier.
